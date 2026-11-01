@@ -1,4 +1,38 @@
-# 🧾 Facturador ARCA por Telegram
+# Super bot operativo Calma + ARCA
+
+Esta rama convierte el proyecto en un worker independiente para el backend de
+Calma. Telegram, Gemini, Afip SDK, los PDF y los certificados viven en el
+homelab; MySQL/Prisma en Calma conserva el estado operativo, auditoría, outbox y
+trabajos fiscales. El bot no abre puertos y usa long polling.
+
+El código anterior basado en Supabase queda como referencia en
+`bot_telegram.py` y `facturador.py`; el runtime nuevo es `run_superbot.py`.
+
+## Arranque del worker nuevo
+
+1. Copiá `.env.example` a `.env` y completá las credenciales.
+2. Dejá `ARCA_PRODUCTION=false` y `BOT_WRITES_ENABLED=false` en Calma durante
+   las pruebas iniciales.
+3. Guardá `cert.crt` y `private.key` fuera del repositorio, en el directorio
+   configurado con `ARCA_SECRETS_DIR`, con permisos solo para el propietario.
+4. Ejecutá `docker compose build` y luego `docker compose up -d`.
+5. Generá un código desde `/telegram` en Calma y enviá `/vincular CODIGO` al bot.
+
+No hay secretos en la imagen ni en Compose. Los comprobantes se generan
+localmente en `/data/documents` y el volumen es privado. Todas las escrituras
+siguen el circuito texto/voz → intención → preview de Calma → confirmación.
+
+## Pruebas
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+La suite simula Gemini y Afip SDK; no consume cuota ni emite comprobantes.
+
+---
+
+# 🧾 Facturador ARCA por Telegram (implementación original)
 
 Bot de Telegram para que un **monotributista** emita **Factura C** en ARCA
 (ex-AFIP) desde el chat, en dos toques:

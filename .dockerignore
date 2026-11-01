@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+!.env.example
+.venv
+__pycache__
+*.pyc
+*.key
+*.crt
+*.csr
+*.pem
+data
+tests
+bot_telegram.py
+facturador.py
+schema_facturacion.sql
